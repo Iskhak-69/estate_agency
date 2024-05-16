@@ -10,43 +10,10 @@ public class Manager extends Person {
 
     Scanner scanner = new Scanner(System.in);
 
-    public Manager(String username, String password) {
-        super(username, password);
+    public Manager(String username, String password, String accountType) {
+        super(username, password, accountType);
     }
 
-
-    public void deleteCategoryProduct(int categoryId) {
-        String sql = "DELETE FROM Categories WHERE id = ?";
-        try (Connection conn = MyJDBC.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, categoryId);
-            int affectedRows = pstmt.executeUpdate();
-            if (affectedRows > 0) {
-                System.out.println("Category deleted successfully.\n\n");
-            } else {
-                System.out.println("Failed to delete category.\n\n");
-            }
-        } catch (SQLException e) {
-            System.out.println("Error while deleting category: " + e.getMessage());
-        }
-    }
-    public void registerMaster(String username , String password){
-
-        String sql = "INSERT INTO Users (username, password, role) VALUES (?, ?, 'master')";
-        try (Connection conn = MyJDBC.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, username);
-            pstmt.setString(2, password);
-            int affectedRows = pstmt.executeUpdate();
-            if (affectedRows > 0) {
-                System.out.println("Master added successfully.\n\n");
-            } else {
-                System.out.println("Failed to add master.\n\n");
-            }
-        } catch (SQLException e) {
-            System.out.println("Error while adding master: " + e.getMessage());
-        }
-    }
 
     public void displayOptions() {
         int choice;
@@ -70,26 +37,33 @@ public class Manager extends Person {
             System.out.println("7. Выход");
 
             choice = scanner.nextInt();
-            scanner.nextLine(); // Это нужно, чтобы очистить буфер после чтения числа
+            scanner.nextLine(); // Это нужно чтобы очистить бцфер после чтения числа
 
             switch (choice) {
                 case 1:
                     // Показать список сотрудников
+                    showEmployees();
                     break;
                 case 2:
                     // Показать список дел
+                    showAndAddTasks();
                     break;
                 case 3:
                     // Показать список указаний к сотрудникам
+                    showInstructions();
                     break;
                 case 4:
                     // Показать список всех зон покрытия
+                    showCoverageAreas();
                     break;
+
                 case 5:
                     // Показать сумму по недвижимостям
+                    showRealEstateSummaries();
                     break;
                 case 6:
                     // Посчитать % по категориям недвижимости
+                    calculateRealEstatePercentages();
                     break;
                 case 7:
                     System.out.println("Программа завершена, мы будем рады вашему возвращению!");
@@ -102,14 +76,10 @@ public class Manager extends Person {
         return choice;
     }
     public void showEmployees() {
-        String url = "jdbc:mysql://localhost:3306/company_db?useSSL=false";
-        String user = "yourusername"; // Замените на ваше имя пользователя
-        String password = "yourpassword"; // Замените на ваш пароль
-
         String query = "SELECT id, first_name, last_name, position, department FROM employees";
 
-        try (Connection conn = DriverManager.getConnection(url, user, password);
-             PreparedStatement stmt = conn.prepareStatement(query);
+        try (Connection connection = MyJDBC.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
 
             System.out.println("Список сотрудников:");
@@ -126,18 +96,17 @@ public class Manager extends Person {
     }
 
     public void showAndAddTasks() {
-        String url = "jdbc:mysql://localhost:3306/company_db?useSSL=false";
-        String user = "yourusername"; // Замените на ваше имя пользователя
-        String password = "yourpassword"; // Замените на ваш пароль
         String query = "SELECT id, task_name, description, due_date FROM tasks";
 
-        try (Connection conn = DriverManager.getConnection(url, user, password);
-             PreparedStatement stmt = conn.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
+        try (Connection conn = MyJDBC.getConnection();
+        ) {
+            Statement statement = conn.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT id, task_name, description, due_date FROM tasks");
 
             System.out.println("Список всех дел:");
-            while (rs.next()) {
-                System.out.println(rs.getInt("id") + ": " + rs.getString("task_name") + " - " + rs.getString("description") + " (Due: " + rs.getDate("due_date") + ")");
+            while (resultSet.next()) {
+                System.out.println(resultSet.getInt("id") + ": " + resultSet.getString("task_name") + " - " +
+                        resultSet.getString("description") + " (Due: " + resultSet.getDate("due_date") + ")");
             }
 
             // Добавление задачи в файл
@@ -152,33 +121,58 @@ public class Manager extends Person {
         }
     }
 
-    private  void addTaskToFile(String taskName) {
-        try (FileWriter writer = new FileWriter("tasks.txt", true)) {
-            writer.append(taskName).append("\n");
-            System.out.println("Задача добавлена в файл: " + taskName);
-        } catch (IOException e) {
-            System.out.println("Ошибка при записи в файл: " + e.getMessage());
+    private void addTaskToFile(String taskName) {
+        String query = "INSERT INTO tasks (task_name) VALUES (?)";
+
+        try (Connection conn = MyJDBC.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, taskName);
+            int rowsInserted = stmt.executeUpdate();
+
+            if (rowsInserted > 0) {
+                System.out.println("Задача добавлена в базу данных: " + taskName);
+            } else {
+                System.out.println("Ошибка при добавлении задачи в базу данных.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Ошибка при выполнении SQL-запроса: " + e.getMessage());
         }
     }
 
 
 
     public void showInstructions() {
-        String url = "jdbc:mysql://localhost:3306/company_db?useSSL=false";
-        String user = "yourusername"; // Замените на ваше имя пользователя
-        String password = "yourpassword"; // Замените на ваш пароль
-        String query = "SELECT i.id, e.first_name, e.last_name, i.instruction, i.date_assigned FROM instructions i JOIN employees e ON i.employee_id = e.id";
+        String query = "SELECT id, first_name, last_name, instruction, date_assigned FROM instructions JOIN employees ON employee_id = id";
 
-        try (Connection conn = DriverManager.getConnection(url, user, password);
-             PreparedStatement stmt = conn.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
+        try (Connection connection = MyJDBC.getConnection();
+        ) {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
 
             System.out.println("Список всех указаний к сотрудникам:");
+            while (resultSet.next()) {
+                System.out.println(resultSet.getInt("id") + ": " + resultSet.getString("first_name") + " " +
+                        resultSet.getString("last_name") + " - " +
+                        resultSet.getString("instruction") + " (Assigned: " +
+                        resultSet.getDate("date_assigned") + ")");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Ошибка при подключении к базе данных: " + e.getMessage());
+        }
+    }
+
+    public void showCoverageAreas() {
+        String query = "SELECT id, area_name, region FROM coverage_areas";
+
+        try (Connection connection = MyJDBC.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+
+            System.out.println("Список всех зон покрытия:");
             while (rs.next()) {
-                System.out.println(rs.getInt("id") + ": " + rs.getString("first_name") + " " +
-                        rs.getString("last_name") + " - " +
-                        rs.getString("instruction") + " (Assigned: " +
-                        rs.getDate("date_assigned") + ")");
+                System.out.println(rs.getInt("id") + ": " + rs.getString("area_name") + " - " +
+                        rs.getString("region"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -188,14 +182,10 @@ public class Manager extends Person {
 
 
     public void showRealEstateSummaries() {
-        String url = "jdbc:mysql://localhost:3306/company_db?useSSL=false";
-        String user = "yourusername";
-        String password = "yourpassword";
-
-        try (Connection conn = DriverManager.getConnection(url, user, password)) {
-            showTotalSales(conn);
-            showRentalSumsByQuarter(conn);
-            showLeaseToOwn(conn);
+        try (Connection connection = MyJDBC.getConnection();) {
+            showTotalSales(connection);
+            showRentalSumsByQuarter(connection);
+            showLeaseToOwn(connection);
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Ошибка при подключении к базе данных: " + e.getMessage());

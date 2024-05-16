@@ -6,8 +6,8 @@ import java.util.Scanner;
 public class Marketing extends Person {
     Scanner scanner = new Scanner(System.in);
 
-    public Marketing(String username, String password) {
-        super(username, password);
+    public Marketing(String username, String password, String accountType) {
+        super(username, password, accountType);
     }
     public void displayOptions() {
         int choice;

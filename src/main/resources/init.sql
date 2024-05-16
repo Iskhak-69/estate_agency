@@ -4,6 +4,18 @@ CREATE TABLE marketing_budgets (
                                    budget DECIMAL(10, 2)
 );
 
+CREATE TABLE marketing_expenses (
+                                    id INT PRIMARY KEY AUTO_INCREMENT,
+                                    amount DECIMAL(10, 2)
+);
+
+
+CREATE TABLE construction_equipment (
+                                        id INT AUTO_INCREMENT PRIMARY KEY,
+                                        equipment_name VARCHAR(100) NOT NULL,
+                                        quantity INT NOT NULL
+);
+
 
 CREATE TABLE employees (
                            id INT AUTO_INCREMENT PRIMARY KEY,
@@ -34,3 +46,51 @@ CREATE TABLE real_estate (
                              price DECIMAL(10, 2),
                              date_listed DATE
 );
+
+CREATE TABLE available_apartments_for_sale (
+                                               id INT AUTO_INCREMENT PRIMARY KEY,
+                                               address VARCHAR(255) NOT NULL,
+                                               price DECIMAL(10, 2) NOT NULL,
+                                               status VARCHAR(50) DEFAULT 'Available'
+);
+
+
+CREATE TABLE sold_apartments (
+                                               id INT AUTO_INCREMENT PRIMARY KEY,
+                                               address VARCHAR(255) NOT NULL,
+                                               price DECIMAL(10, 2) NOT NULL,
+                                               buyer_name VARCHAR(100) NOT NULL,
+                                               sale_date DATE NOT NULL
+);
+
+CREATE TABLE apartments (
+                            id INT AUTO_INCREMENT PRIMARY KEY,
+                            address VARCHAR(255) NOT NULL,
+                            owner VARCHAR(255),
+                            status ENUM('Available', 'Sold', 'Rented') DEFAULT 'Available'
+);
+
+CREATE TABLE workers (
+                         id INT AUTO_INCREMENT PRIMARY KEY,
+                         username VARCHAR(100) NOT NULL,
+                         password VARCHAR(100) NOT NULL,
+                         salary DECIMAL(10, 2) NOT NULL
+);
+
+
+CREATE TABLE instructions (
+                              id INT AUTO_INCREMENT PRIMARY KEY,
+                              employee_id INT,
+                              instruction TEXT,
+                              date_assigned DATE,
+                              FOREIGN KEY (employee_id) REFERENCES employees(id)
+);
+
+
+CREATE TABLE coverage_areas (
+                                id INT AUTO_INCREMENT PRIMARY KEY,
+                                area_name VARCHAR(255) NOT NULL,
+                                region VARCHAR(255) NOT NULL
+);
+
+

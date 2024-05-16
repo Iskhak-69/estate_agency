@@ -53,20 +53,28 @@ public class Account {
             resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
-                String role = resultSet.getString("role");
+                String accountType = resultSet.getString("accountType");
                 System.out.println("Login successful!");
-                switch (role) {
-                    case "admin":
-                        Manager manager = new Manager(username, password);
+                switch (accountType) {
+                    case "manager":
+                        Manager manager = new Manager(username, password, accountType);
                         manager.displayOptions();
                         break;
-                    case "master":
-                        GenDir genDir = new GenDir(username, password);
+                    case "genDir":
+                        GenDir genDir = new GenDir(username, password, accountType);
                         genDir.displayOptions();
                         break;
-                    case "buyer":
-                        Marketing buyer = new Marketing(username, password);
-                        buyer.displayOptions();
+                    case "marketing":
+                        Marketing marketing = new Marketing(username, password, accountType);
+                        marketing.displayOptions();
+                        break;
+                    case "sale manager":
+                        SalesAgent salesAgent = new SalesAgent(username, password, accountType);
+                        salesAgent.displayOptions();
+                        break;
+                    case "worker":
+                        Worker worker = new Worker(username, password, accountType);
+                        worker.displayOptions();
                         break;
                     default:
                         System.out.println("No role-specific options available.");

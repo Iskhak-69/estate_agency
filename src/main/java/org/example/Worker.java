@@ -6,8 +6,8 @@ import java.sql.*;
 public class Worker extends Person{
 
 
-    public Worker(String username, String password) {
-        super(username, password);
+    public Worker(String username, String password, String accountType) {
+        super(username, password, accountType);
     }
 
     public static void main(String[] args) {
@@ -26,12 +26,12 @@ public class Worker extends Person{
         System.out.print("Пожалуйста введите свой пароль: >>> ");
         String password = scanner.nextLine();
 
-        Worker worker = new Worker(login, password);
+        Worker worker = new Worker(login, password, accountType);
         worker.displayOptions();
     }
 
     public void displayOptions() {
-        if (authenticate(username, password)) {
+        if (authenticate(username, password, accountType)) {
             System.out.println("Авторизация прошла успешно!");
 
             Scanner scanner = new Scanner(System.in);
@@ -45,21 +45,24 @@ public class Worker extends Person{
                 System.out.println("4. Показать зарплату.");
                 System.out.println("5. Выход.");
 
+                System.out.print("Ваш выбор: ");
                 int choice = scanner.nextInt();
-                scanner.nextLine(); // Consume newline
+                scanner.nextLine();
 
                 switch (choice) {
                     case 1:
                         showAssignedTasks();
                         break;
                     case 2:
-                        // Complete task
+                        System.out.print("Введите описание задачи для завершения: ");
+                        String taskDescription = scanner.nextLine();
+                        completeTask(taskDescription);
                         break;
                     case 3:
-                        // Show completed tasks
+                        showCompletedTasks();
                         break;
                     case 4:
-                        // Show salary
+                        showSalary();
                         break;
                     case 5:
                         System.out.println("Программа завершена, мы будем рады вашему возвращению!");
@@ -93,4 +96,59 @@ public class Worker extends Person{
             e.printStackTrace();
         }
     }
+
+    private static void completeTask(String taskDescription) {
+        try (Connection connection = MyJDBC.getConnection();
+             PreparedStatement statement = connection.prepareStatement("DELETE FROM assigned_tasks WHERE task_description = ?")) {
+            statement.setString(1, taskDescription);
+            int rowsDeleted = statement.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("Task '" + taskDescription + "' completed successfully.");
+            } else {
+                System.out.println("Failed to complete task '" + taskDescription + "'. Task not found.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void showCompletedTasks() {
+        try (Connection connection = MyJDBC.getConnection();
+             Statement statement = connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery("SELECT task_description FROM completed_tasks WHERE employee_login = ?");
+            if (!resultSet.next()) {
+                System.out.println("No completed tasks found.");
+            } else {
+                System.out.println("Список завершенных вами задач:");
+                do {
+                    String taskDescription = resultSet.getString("task_description");
+                    System.out.println("- " + taskDescription);
+                } while (resultSet.next());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void showSalary() {
+        try (Connection connection = MyJDBC.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT salary FROM workers WHERE username = ?");
+        ) {
+            // Set the username parameter in the prepared statement
+            statement.setString(1, username);
+
+            // Execute the query to fetch the salary
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                double salary = resultSet.getDouble("salary");
+                System.out.println("Your salary is: $" + salary);
+            } else {
+                System.out.println("Salary information not found.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
