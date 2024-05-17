@@ -9,9 +9,9 @@ public class Main {
         int choice = 0;
 
         while (proccesing && (choice != 1 || choice != 2)) {
-            System.out.println("1. Login");
-            System.out.println("2. Exit");
-            System.out.print("Choose an option: ");
+            System.out.println("1. Логин");
+            System.out.println("2. Выход");
+            System.out.print("Выберите один из вариантов: ");
             choice = scanner.nextInt();
             scanner.nextLine();
 
@@ -20,11 +20,11 @@ public class Main {
                     login(scanner);
                     break;
                 case 2:
-                    System.out.println("Exiting the program... \nThank you to visiting our program.");
+                    System.out.println("Выход из программы... \nБлагодарим вас за посещение нашей программы.");
                     proccesing = false;
                     break;
                 default:
-                    System.out.println("Invalid option selected. Please choose again.");
+                    System.out.println("Выбран неверный вариант. Пожалуйста, выберите еще раз.");
                     break;
             }
         }
@@ -38,9 +38,9 @@ public class Main {
 
         try {
             connection = MyJDBC.getConnection();
-            System.out.println("Enter username:");
+            System.out.println("Введите имя пользователя:");
             String username = scanner.nextLine();
-            System.out.println("Enter password:");
+            System.out.println("Введите пароль:");
             String password = scanner.nextLine();
 
             String query = "SELECT username, password, accountType FROM users WHERE username = ? AND password = ?";
@@ -52,7 +52,7 @@ public class Main {
 
             if (resultSet.next()) {
                 String accountType = resultSet.getString("accountType");
-                System.out.println("Login successful!");
+                System.out.println("Вход в систему прошел успешно!");
 
                 switch (accountType) {
                     case "manager":
@@ -76,21 +76,21 @@ public class Main {
                         worker.displayOptions();
                         break;
                     default:
-                        System.out.println("Incorrect account type.");
+                        System.out.println("Неверный тип учетной записи.");
                         break;
                 }
             } else {
-                System.out.println("Invalid username or password. Try again.");
+                System.out.println("Неверное имя пользователя или пароль. Пробовать снова.");
             }
         } catch (SQLException e) {
-            System.out.println("Error connecting to the database: " + e.getMessage());
+            System.out.println("Ошибка подключения к базе данных: " + e.getMessage());
         } finally {
             try {
                 if (resultSet != null) resultSet.close();
                 if (preparedStatement != null) preparedStatement.close();
                 if (connection != null) connection.close();
             } catch (SQLException ex) {
-                System.out.println("Error closing resources: " + ex.getMessage());
+                System.out.println("Ошибка при закрытии ресурсов: " + ex.getMessage());
             }
         }
     }

@@ -2,7 +2,7 @@ import java.sql.*;
 import java.util.Scanner;
 
 public class GenDir extends Person {
-
+    private static final  Scanner scanner = new Scanner(System.in);
     public GenDir(String username, String password, String accountType) {
         super(username, password, accountType);
     }
@@ -10,7 +10,7 @@ public class GenDir extends Person {
 
 
     public void displayOptions(Connection connection) {
-        Scanner scanner = new Scanner(System.in);
+
         int choice;
         System.out.println("Приветствую дорогой, Директор!");
         do {
@@ -64,26 +64,6 @@ public class GenDir extends Person {
         } while (choice != 9);
     }
 
-    private static void showConstructionEquipment(Connection connection) {
-        String query = "SELECT id, equipment_name, quantity FROM construction_equipment";
-
-        try (PreparedStatement stmt = connection.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
-
-            System.out.println("List of Construction Equipment:");
-            while (rs.next()) {
-                int id = rs.getInt("id");
-                String equipmentName = rs.getString("equipment_name");
-                int quantity = rs.getInt("quantity");
-
-                System.out.println("ID: " + id + ", Equipment Name: " + equipmentName + ", Quantity: " + quantity);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Error connecting to the database: " + e.getMessage());
-        }
-    }
-
 
     public static void showCoverageZones(Connection connection) {
         String query = "SELECT id, area_name, region_name FROM coverage_zones";
@@ -119,33 +99,59 @@ public class GenDir extends Person {
             e.printStackTrace();
             System.out.println("Ошибка при подключении к базе данных: " + e.getMessage());
         }
+        System.out.println();
     }
 
 
     public static void showAllocatedMarketingBudget(Connection connection) {
-        String query = "SELECT SUM(amount) AS allocated_budget FROM marketing_budget";
+
+        String query = "SELECT DISTINCT id, category_name FROM marketing_budgets";
 
         try (PreparedStatement stmt = connection.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
 
-            if (rs.next()) {
-                double allocatedBudget = rs.getDouble("allocated_budget");
-                System.out.println("Выделенный маркетинговый бюджет: $" + allocatedBudget);
-            } else {
-                System.out.println("Маркетинговый бюджет не выделен.");
+            System.out.println("Список зон для маркетинга:");
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String category = rs.getString("category_name");
+                System.out.println( id + " " + category);
             }
+
+
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Ошибка при подключении к базе данных: " + e.getMessage());
         }
+        System.out.println("Выберите зону, чтобы увидеть маркетинговый бюджет:");
+        String category = scanner.nextLine();
+
+        query = "SELECT budget FROM marketing_budgets WHERE category_name = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, category);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                double budget = rs.getDouble("budget");
+                System.out.println("Выделенный маркетинговый бюджет для категории '" + category + "': $" + budget);
+            } else {
+                System.out.println("Маркетинговый бюджет для категории '" + category + "' не выделен.");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Ошибка при подключении к базе данных: " + e.getMessage());
+        }
+        System.out.println();
     }
 
 
     public static void showCurrentMarketingBudget(Connection connection) {
-        String allocatedBudgetQuery = "SELECT SUM(amount) AS budget FROM marketing_budget";
+        String budgetQuery = "SELECT SUM(budget) AS budget FROM marketing_budgets";
         String spentBudgetQuery = "SELECT SUM(amount) AS spent_budget FROM marketing_expenses";
 
-        try (PreparedStatement allocatedStmt = connection.prepareStatement(allocatedBudgetQuery);
+        try (PreparedStatement allocatedStmt = connection.prepareStatement(budgetQuery);
              ResultSet allocatedRs = allocatedStmt.executeQuery();
              PreparedStatement spentStmt = connection.prepareStatement(spentBudgetQuery);
              ResultSet spentRs = spentStmt.executeQuery()) {
@@ -168,6 +174,7 @@ public class GenDir extends Person {
             e.printStackTrace();
             System.out.println("Ошибка при подключении к базе данных: " + e.getMessage());
         }
+        System.out.println();
     }
 
 
@@ -179,24 +186,25 @@ public class GenDir extends Person {
 
             if (resultSet.next()) {
                 double totalSalary = resultSet.getDouble("total_salary");
-                System.out.println("Total Salary Budget: " + totalSalary);
+                System.out.println("Общий бюджет заработной платы: " + totalSalary);
             } else {
-                System.out.println("No data available.");
+                System.out.println("Нет доступных данных.");
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println("Error retrieving total salary budget: " + e.getMessage());
+            System.out.println("Ошибка при получении общего бюджета заработной платы: " + e.getMessage());
         }
+        System.out.println();
     }
 
 
     public static void increaseEmployeeSalary(Connection connection) {
         Scanner scanner = new Scanner(System.in);
 
-        System.out.print("Enter the ID of the employee whose salary you want to increase: ");
+        System.out.print("Введите ID сотрудника, зарплату которого вы хотите увеличить: ");
         int employeeId = scanner.nextInt();
 
-        System.out.print("Enter the amount by which to increase the salary: ");
+        System.out.print("Введите сумму, на которую нужно увеличить зарплату: ");
         double increaseAmount = scanner.nextDouble();
 
         String query = "UPDATE employees SET salary = salary + ? WHERE id = ?";
@@ -207,14 +215,15 @@ public class GenDir extends Person {
 
             int rowsAffected = statement.executeUpdate();
             if (rowsAffected > 0) {
-                System.out.println("Employee salary increased successfully.");
+                System.out.println("Заработная плата сотрудников успешно повышалась.");
             } else {
-                System.out.println("No employee found with the specified ID.");
+                System.out.println("Сотрудник с указанным идентификатором не найден.");
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println("Error increasing employee salary: " + e.getMessage());
+            System.out.println("Ошибка в повышении заработной платы сотрудника: " + e.getMessage());
         }
+        System.out.println();
     }
 
 
@@ -222,10 +231,10 @@ public class GenDir extends Person {
     public static void decreaseEmployeeSalary(Connection connection) {
         Scanner scanner = new Scanner(System.in);
 
-        System.out.print("Enter the ID of the employee whose salary you want to decrease: ");
+        System.out.print("Введите ID сотрудника, зарплату которого вы хотите уменьшить: ");
         int employeeId = scanner.nextInt();
 
-        System.out.print("Enter the amount by which to decrease the salary: ");
+        System.out.print("Введите сумму, на которую следует уменьшить заработную плату: ");
         double decreaseAmount = scanner.nextDouble();
 
         String query = "UPDATE employees SET salary = salary - ? WHERE id = ?";
@@ -236,14 +245,35 @@ public class GenDir extends Person {
 
             int rowsAffected = statement.executeUpdate();
             if (rowsAffected > 0) {
-                System.out.println("Employee salary decreased successfully.");
+                System.out.println("Заработная плата сотрудников успешно снизилась.");
             } else {
-                System.out.println("No employee found with the specified ID.");
+                System.out.println("Сотрудник с указанным идентификатором не найден.");
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println("Error decreasing employee salary: " + e.getMessage());
+            System.out.println("Ошибка, приводящая к снижению заработной платы сотрудника: " + e.getMessage());
         }
+        System.out.println();
+    }
 
+    private static void showConstructionEquipment(Connection connection) {
+        String query = "SELECT id, equipment_name, quantity FROM construction_equipment";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+
+            System.out.println("Перечень строительного оборудования: ");
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String equipmentName = rs.getString("equipment_name");
+                int quantity = rs.getInt("quantity");
+
+                System.out.println("ID: " + id + ", Название оборудования: " + equipmentName + ", Количество: " + quantity);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Ошибка подключения к базе данных: " + e.getMessage());
+        }
+        System.out.println();
     }
 }

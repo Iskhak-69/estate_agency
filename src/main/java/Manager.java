@@ -79,10 +79,10 @@ public class Manager extends Person {
             e.printStackTrace();
             System.out.println("Ошибка при подключении к базе данных: " + e.getMessage());
         }
+        System.out.println();
     }
 
     public void showAndAddTasks() {
-        String query = "SELECT id, task_name, description, due_date FROM tasks";
 
         try (Connection conn = MyJDBC.getConnection();
         ) {
@@ -105,6 +105,7 @@ public class Manager extends Person {
             e.printStackTrace();
             System.out.println("Ошибка при подключении к базе данных: " + e.getMessage());
         }
+        System.out.println();
     }
 
     private void addTaskToFile(String taskName) {
@@ -123,6 +124,7 @@ public class Manager extends Person {
         } catch (SQLException e) {
             System.out.println("Ошибка при выполнении SQL-запроса: " + e.getMessage());
         }
+        System.out.println();
     }
 
 
@@ -146,6 +148,7 @@ public class Manager extends Person {
             e.printStackTrace();
             System.out.println("Ошибка при подключении к базе данных: " + e.getMessage());
         }
+        System.out.println();
     }
 
     public void showCoverageAreas() {
@@ -164,6 +167,7 @@ public class Manager extends Person {
             e.printStackTrace();
             System.out.println("Ошибка при подключении к базе данных: " + e.getMessage());
         }
+        System.out.println();
     }
 
 
@@ -176,6 +180,7 @@ public class Manager extends Person {
             e.printStackTrace();
             System.out.println("Ошибка при подключении к базе данных: " + e.getMessage());
         }
+        System.out.println();
     }
 
     private void showTotalSales(Connection conn) throws SQLException {
@@ -220,6 +225,7 @@ public class Manager extends Person {
             e.printStackTrace();
             System.out.println("Ошибка при подключении к базе данных: " + e.getMessage());
         }
+        System.out.println();
     }
 
     private double getTotalProperties(Connection conn) throws SQLException {

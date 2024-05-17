@@ -11,8 +11,8 @@ public class Marketing extends Person {
 
     public void displayOptions(){
         int choice = 0 ;
+        System.out.println("Приветствую дорогой, Маркетолог!");
         do {
-            System.out.println("Приветствую дорогой, Маркетолог!");
             System.out.println("Пожалуйста наберите номер меню для работы с программой, если закончили, то наберите 5:");
             System.out.println("1. Показать список категорий для маркетинга");
             System.out.println("2. Показать выделенный бюджет для определенной категории мест для маркетинга");
@@ -61,6 +61,7 @@ public class Marketing extends Person {
         } catch (SQLException e) {
             System.out.println("Error accessing the catalog: " + e.getMessage());
         }
+        System.out.println();
     }
 
 
@@ -89,6 +90,7 @@ public class Marketing extends Person {
         } catch (Exception e) {
             System.out.println("Ошибка при подключении к базе данных: " + e.getMessage());
         }
+        System.out.println();
     }
     public void showTotalMarketingBudget() {
         try {
@@ -110,6 +112,7 @@ public class Marketing extends Person {
         } catch (Exception e) {
             System.out.println("Ошибка при подключении к базе данных: " + e.getMessage());
         }
+        System.out.println();
     }
 
     public void spendMarketingBudget() {
@@ -157,6 +160,7 @@ public class Marketing extends Person {
         } catch (Exception e) {
             System.out.println("Ошибка при подключении к базе данных: " + e.getMessage());
         }
+        System.out.println();
     }
 
 }

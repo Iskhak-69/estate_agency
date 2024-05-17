@@ -13,9 +13,8 @@ public class Worker extends Person {
             System.out.println("Авторизация прошла успешно!");
 
             Scanner scanner = new Scanner(System.in);
-
+            System.out.println("Приветствую, дорогой Сотрудник " + username + "!");
             while (true) {
-                System.out.println("Приветствую, дорогой Сотрудник " + username + "!");
                 System.out.println("Пожалуйста, наберите номер меню для работы с программой, или 5 для выхода:");
                 System.out.println("1. Показать список порученных вам дел.");
                 System.out.println("2. Выполнить поручение.");
@@ -73,6 +72,7 @@ public class Worker extends Person {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        System.out.println();
     }
 
     private static void completeTask(String taskDescription) {
@@ -88,6 +88,7 @@ public class Worker extends Person {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        System.out.println();
     }
 
     private static void showCompletedTasks() {
@@ -106,6 +107,7 @@ public class Worker extends Person {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        System.out.println();
     }
 
     private void showSalary() {
@@ -127,6 +129,7 @@ public class Worker extends Person {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        System.out.println();
     }
 
 }

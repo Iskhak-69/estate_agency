@@ -10,6 +10,7 @@ CREATE TABLE marketing_budgets (
                                    id INT AUTO_INCREMENT PRIMARY KEY,
                                    category_name VARCHAR(255),
                                    budget DECIMAL(10, 2)
+
 );
 
 CREATE TABLE marketing_expenses (
@@ -30,7 +31,8 @@ CREATE TABLE employees (
                            first_name VARCHAR(50),
                            last_name VARCHAR(50),
                            position VARCHAR(100),
-                           department VARCHAR(100)
+                           department VARCHAR(100),
+                           salary INT(9)
 );
 
 CREATE TABLE tasks (

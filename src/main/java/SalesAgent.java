@@ -10,8 +10,8 @@ public class SalesAgent extends Person {
     public void displayOptions() {
         Scanner scanner = new Scanner(System.in);
         int choice;
+        System.out.println("Приветствую дорогой, Агент по продажам!");
         do {
-            System.out.println("Приветствую дорогой, Агент по продажам!");
             System.out.println("Пожалуйста наберите номер меню для работы с программой, если закончили, то наберите 11:");
             System.out.println("1. Показать всех клиентов");
             System.out.println("2. Поиск клиента");
@@ -90,6 +90,7 @@ public class SalesAgent extends Person {
         } catch (SQLException e) {
             System.out.println("Error accessing the catalog: " + e.getMessage());
         }
+        System.out.println();
     }
 
     public static void searchClient() {
@@ -111,6 +112,7 @@ public class SalesAgent extends Person {
         } catch (SQLException e) {
             System.out.println("Ошибка при выполнении запроса: " + e.getMessage());
         }
+        System.out.println();
     }
 
     public static void showAvailableApartmentsForSale() {
@@ -138,6 +140,7 @@ public class SalesAgent extends Person {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        System.out.println();
     }
 
 
@@ -168,6 +171,7 @@ public class SalesAgent extends Person {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        System.out.println();
     }
 
 
@@ -193,6 +197,7 @@ public class SalesAgent extends Person {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        System.out.println();
     }
 
     public static void showCheapestApartment() {
@@ -211,6 +216,7 @@ public class SalesAgent extends Person {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        System.out.println();
     }
 
 
@@ -229,6 +235,7 @@ public class SalesAgent extends Person {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        System.out.println();
     }
 
     // Rent an apartment
@@ -246,6 +253,7 @@ public class SalesAgent extends Person {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        System.out.println();
     }
 
     // Show available apartments for rent
@@ -266,6 +274,7 @@ public class SalesAgent extends Person {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        System.out.println();
     }
 
     // Show rented apartments
@@ -286,5 +295,6 @@ public class SalesAgent extends Person {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        System.out.println();
     }
 }
