@@ -1,3 +1,11 @@
+CREATE TABLE users (
+                       id INT AUTO_INCREMENT PRIMARY KEY,
+                       username VARCHAR(255) NOT NULL,
+                       password VARCHAR(255) NOT NULL,
+                       accountType VARCHAR(255) NOT NULL
+
+);
+
 CREATE TABLE marketing_budgets (
                                    id INT AUTO_INCREMENT PRIMARY KEY,
                                    category_name VARCHAR(255),
@@ -37,8 +45,11 @@ CREATE TABLE coverage_areas (
                                 id INT AUTO_INCREMENT PRIMARY KEY,
                                 region_name VARCHAR(255),
                                 client_coverage INT, -- количество клиентов в регионе
-                                total_population INT -- общая численность населения в регионе
+                                total_population INT, -- общая численность населения в регионе
+                                area_name VARCHAR(255) NOT NULL
 );
+
+
 CREATE TABLE real_estate (
                              id INT AUTO_INCREMENT PRIMARY KEY,
                              property_type VARCHAR(50),
@@ -84,13 +95,6 @@ CREATE TABLE instructions (
                               instruction TEXT,
                               date_assigned DATE,
                               FOREIGN KEY (employee_id) REFERENCES employees(id)
-);
-
-
-CREATE TABLE coverage_areas (
-                                id INT AUTO_INCREMENT PRIMARY KEY,
-                                area_name VARCHAR(255) NOT NULL,
-                                region VARCHAR(255) NOT NULL
 );
 
 

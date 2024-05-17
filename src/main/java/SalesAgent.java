@@ -1,5 +1,3 @@
-package org.example;
-
 import java.sql.*;
 import java.util.Scanner;
 
@@ -8,31 +6,6 @@ public class SalesAgent extends Person {
         super(username, password, accountType);
     }
 
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.print("Для запуска программы, пожалуйста введите тип аккаунта: >>> ");
-        String accountType = scanner.nextLine();
-
-        if (!accountType.equalsIgnoreCase("sale manager")) {
-            System.out.println("Извините, но мы не нашли такой тип аккаунта, пожалуйста повторите.");
-            System.out.print("Для запуска программы, пожалуйста введите корректный тип аккаунта: >>> ");
-            accountType = scanner.nextLine();
-        }
-
-        System.out.print("Пожалуйста введите свой логин: >>> ");
-        String username = scanner.nextLine();
-        System.out.print("Пожалуйста введите свой пароль: >>> ");
-        String password = scanner.nextLine();
-
-        authenticateAndDisplayMenu(username, password, accountType);
-    }
-
-    public void authenticateAndDisplayMenu(String login, String password, String accpuntType) {
-        // Assuming authentication logic here...
-        // If authentication is successful, display the menu
-        displayOptions();
-    }
 
     public void displayOptions() {
         Scanner scanner = new Scanner(System.in);

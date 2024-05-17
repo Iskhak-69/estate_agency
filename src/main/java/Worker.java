@@ -1,33 +1,11 @@
-package org.example;
-
 import java.util.Scanner;
 import java.sql.*;
 
-public class Worker extends Person{
+public class Worker extends Person {
 
 
     public Worker(String username, String password, String accountType) {
         super(username, password, accountType);
-    }
-
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.print("Для запуска программы, пожалуйста введите тип аккаунта: >>> ");
-        String accountType = scanner.nextLine();
-
-        if (!accountType.equalsIgnoreCase("worker") && !accountType.equalsIgnoreCase("comp-worker")) {
-            System.out.println("Извините, но мы не нашли такой тип аккаунта, пожалуйста повторите.");
-            return;
-        }
-
-        System.out.print("Пожалуйста введите свой логин: >>> ");
-        String login = scanner.nextLine();
-        System.out.print("Пожалуйста введите свой пароль: >>> ");
-        String password = scanner.nextLine();
-
-        Worker worker = new Worker(login, password, accountType);
-        worker.displayOptions();
     }
 
     public void displayOptions() {

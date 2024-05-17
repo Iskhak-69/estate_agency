@@ -1,19 +1,16 @@
-package org.example;
-
-import org.example.Marketing;
 import java.sql.*;
 import java.util.Scanner;
 
-public class Account {
+public class Main {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        boolean running = true;
+        boolean proccesing = true;
 
-        while (running) {
+        while (proccesing) {
             System.out.println("1. Login");
             System.out.println("2. Exit");
-            System.out.println("Choose an option:");
+            System.out.print("Choose an option: ");
             int choice = scanner.nextInt();
             scanner.nextLine();
 
@@ -22,8 +19,8 @@ public class Account {
                     login(scanner);
                     break;
                 case 2:
-                    System.out.println("Exiting the system.");
-                    running = false;
+                    System.out.println("Exiting the program... \nThank you to visiting our program.");
+                    proccesing = false;
                     break;
                 default:
                     System.out.println("Invalid option selected. Please choose again.");
@@ -45,7 +42,7 @@ public class Account {
             System.out.println("Enter password:");
             String password = scanner.nextLine();
 
-            String query = "SELECT username, password, role FROM users WHERE username = ? AND password = ?";
+            String query = "SELECT username, password, accountType FROM users WHERE username = ? AND password = ?";
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, password);
@@ -77,7 +74,7 @@ public class Account {
                         worker.displayOptions();
                         break;
                     default:
-                        System.out.println("No role-specific options available.");
+                        System.out.println("Incorrect account type.");
                         break;
                 }
             } else {

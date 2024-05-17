@@ -1,5 +1,3 @@
-package org.example;
-
 public class Person {
     protected String username;
     protected String password;

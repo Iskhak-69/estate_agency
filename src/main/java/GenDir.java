@@ -1,5 +1,3 @@
-package org.example;
-
 import java.sql.*;
 import java.util.Scanner;
 
@@ -9,24 +7,6 @@ public class GenDir extends Person {
         super(username, password, accountType);
     }
 
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.print("Для запуска программы, пожалуйста введите тип аккаунта: >>> ");
-        String accountType = scanner.nextLine();
-
-        if (!accountType.equalsIgnoreCase("director")) {
-            System.out.println("Извините, но мы не нашли такой тип аккаунта, пожалуйста повторите.");
-            return;
-        }
-
-        System.out.print("Пожалуйста введите свой логин: >>> ");
-        String login = scanner.nextLine();
-        System.out.print("Пожалуйста введите свой пароль: >>> ");
-        String password = scanner.nextLine();
-
-        authenticateAndDisplayMenu(login, password);
-    }
 
     public static void authenticateAndDisplayMenu(String login, String password) {
         try (Connection connection = MyJDBC.getConnection();) {
@@ -105,6 +85,25 @@ public class GenDir extends Person {
         } while (choice != 9);
     }
 
+    private static void showConstructionEquipment(Connection connection) {
+        String query = "SELECT id, equipment_name, quantity FROM construction_equipment";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+
+            System.out.println("List of Construction Equipment:");
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String equipmentName = rs.getString("equipment_name");
+                int quantity = rs.getInt("quantity");
+
+                System.out.println("ID: " + id + ", Equipment Name: " + equipmentName + ", Quantity: " + quantity);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Error connecting to the database: " + e.getMessage());
+        }
+    }
 
 
     public static void showCoverageZones(Connection connection) {
@@ -264,26 +263,6 @@ public class GenDir extends Person {
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Error decreasing employee salary: " + e.getMessage());
-        }
-
-        public static void showConstructionEquipment(Connection connection) {
-            String query = "SELECT id, equipment_name, quantity FROM construction_equipment";
-
-            try (PreparedStatement stmt = connection.prepareStatement(query);
-                 ResultSet rs = stmt.executeQuery()) {
-
-                System.out.println("List of Construction Equipment:");
-                while (rs.next()) {
-                    int id = rs.getInt("id");
-                    String equipmentName = rs.getString("equipment_name");
-                    int quantity = rs.getInt("quantity");
-
-                    System.out.println("ID: " + id + ", Equipment Name: " + equipmentName + ", Quantity: " + quantity);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                System.out.println("Error connecting to the database: " + e.getMessage());
-            }
         }
 
     }
