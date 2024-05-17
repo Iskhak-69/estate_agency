@@ -6,12 +6,13 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         boolean proccesing = true;
+        int choice = 0;
 
-        while (proccesing) {
+        while (proccesing && (choice != 1 || choice != 2)) {
             System.out.println("1. Login");
             System.out.println("2. Exit");
             System.out.print("Choose an option: ");
-            int choice = scanner.nextInt();
+            choice = scanner.nextInt();
             scanner.nextLine();
 
             switch (choice) {
@@ -52,6 +53,7 @@ public class Main {
             if (resultSet.next()) {
                 String accountType = resultSet.getString("accountType");
                 System.out.println("Login successful!");
+
                 switch (accountType) {
                     case "manager":
                         Manager manager = new Manager(username, password, accountType);
@@ -59,7 +61,7 @@ public class Main {
                         break;
                     case "genDir":
                         GenDir genDir = new GenDir(username, password, accountType);
-                        genDir.displayOptions();
+                        genDir.displayOptions(connection);
                         break;
                     case "marketing":
                         Marketing marketing = new Marketing(username, password, accountType);

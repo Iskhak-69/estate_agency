@@ -11,17 +11,9 @@ public class Manager extends Person {
 
 
     public void displayOptions() {
-        int choice;
-        do {
-            System.out.println("1. Register master\n2. Add product category\n3. Delete product category\n4. Exit");
-            choice = getChoice(); // Get user choice and handle it in getChoice
-        } while (choice != 4); // Loop until '4' is chosen
-    }
-
-    public int getChoice() {
         int choice = 0;
+        System.out.println("Приветствую дорогой, Менеджер!");
         do {
-            System.out.println("Приветствую дорогой, Менеджер!");
             System.out.println("Пожалуйста наберите номер меню для работы с программой, если закончили, то наберите 7:");
             System.out.println("1. Показать список сотрудников");
             System.out.println("2. Показать список дел");
@@ -68,7 +60,6 @@ public class Manager extends Person {
                     break;
             }
         } while (choice != 7);
-        return choice;
     }
     public void showEmployees() {
         String query = "SELECT id, first_name, last_name, position, department FROM employees";

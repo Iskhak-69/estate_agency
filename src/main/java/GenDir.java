@@ -8,33 +8,12 @@ public class GenDir extends Person {
     }
 
 
-    public static void authenticateAndDisplayMenu(String login, String password) {
-        try (Connection connection = MyJDBC.getConnection();) {
-            if (authenticate(connection, login, password)) {
-                System.out.println("Авторизация прошла успешно!");
-                displayMenu(connection);
-            } else {
-                System.out.println("Ошибка аутентификации. Пожалуйста, проверьте логин и пароль.");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 
-    public static boolean authenticate(Connection connection, String login, String password) throws SQLException {
-        String query = "SELECT * FROM directors WHERE login = ? AND password = ?";
-        PreparedStatement preparedStatement = connection.prepareStatement(query);
-        preparedStatement.setString(1, login);
-        preparedStatement.setString(2, password);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        return resultSet.next();
-    }
-
-    public static void displayMenu(Connection connection) {
+    public void displayOptions(Connection connection) {
         Scanner scanner = new Scanner(System.in);
         int choice;
+        System.out.println("Приветствую дорогой, Директор!");
         do {
-            System.out.println("Приветствую дорогой, Директор!");
             System.out.println("Пожалуйста наберите номер меню для работы с программой, если закончили, то наберите 9:");
             System.out.println("1. Показать список всех зон покрытия");
             System.out.println("2. Показать список категорий бюджета");
@@ -107,7 +86,7 @@ public class GenDir extends Person {
 
 
     public static void showCoverageZones(Connection connection) {
-        String query = "SELECT id, area_name, region FROM coverage_zones";
+        String query = "SELECT id, area_name, region_name FROM coverage_zones";
 
         try (PreparedStatement stmt = connection.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
@@ -115,12 +94,13 @@ public class GenDir extends Person {
             System.out.println("Список всех зон покрытия:");
             while (rs.next()) {
                 System.out.println(rs.getInt("id") + ": " + rs.getString("area_name") + " - " +
-                        rs.getString("region"));
+                        rs.getString("region_name"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Ошибка при подключении к базе данных: " + e.getMessage());
         }
+        System.out.println();
     }
 
 

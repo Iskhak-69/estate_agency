@@ -7,14 +7,9 @@ public class Marketing extends Person {
     public Marketing(String username, String password, String accountType) {
         super(username, password, accountType);
     }
-    public void displayOptions() {
-        int choice;
-        do{
-            System.out.println("1. View users\n2. Add product to cart\n3. Remove product from cart\n4. View cart\n5. Leave a review about the product\n6. Exit");
-            choice = getChoice();
-        }while (choice != 6);
-    }
-    public int getChoice(){
+
+
+    public void displayOptions(){
         int choice = 0 ;
         do {
             System.out.println("Приветствую дорогой, Маркетолог!");
@@ -48,7 +43,6 @@ public class Marketing extends Person {
                     break;
             }
         } while (choice != 5);
-        return choice;
     }
     public void viewUsers() {
         try (Connection conn = MyJDBC.getConnection(); // Get connection from MyJDBC class

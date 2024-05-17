@@ -44,7 +44,7 @@ public class Worker extends Person {
                         break;
                     case 5:
                         System.out.println("Программа завершена, мы будем рады вашему возвращению!");
-                        return;
+                        break;
                     default:
                         System.out.println("Некорректный выбор. Пожалуйста, попробуйте снова.");
                 }
